@@ -1,7 +1,22 @@
-import * as types from '../types'
+import * as types from './types'
 
-export function sendForm(){
+export function loginRequest(payload){
     return {
-        type: types.BOTAO_CLICADO
+        type: types.LOGUIN_REQUEST,
+        payload
+    };
+}   
+
+export function loginSuccess(payload){
+    return {
+        type: types.LOGUIN_SUCCESS,
+        payload
+    };
+}
+
+export function loginFailure(payload){
+    return{
+        type: types.LOGUIN_FAILURE,
+        payload
     };
 }
