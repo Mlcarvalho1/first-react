@@ -1,0 +1,138 @@
+html{
+    background-color: #002E4E;
+}
+
+h1{
+    text-align: center;
+    color: white;
+}
+
+h1#root{
+    text-align: center;
+    color: white;
+}
+
+nav.navbar-blue{
+    background-color: #001523;
+}
+
+div#root{
+    background-color: #002E4E;
+}
+
+.mb-3{
+    color: white;
+    text-decoration: none;
+}
+
+button.btn.btn-secondary {
+    background-color: #003A61;
+}
+
+#nav-a{
+    color: white;
+    text-decoration: none;
+}
+.card{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container.chart{
+    background-color: white;
+    margin-bottom: 20px;
+    margin-left: auto;
+    padding: 20px 10px 0px 0px;
+    border-radius: 8px;
+}
+
+#home-page.jumbotron{
+
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: xx-large;
+    background-color: #05648C;
+    padding: 0px 30px 30px 30px;
+}
+
+.fa.fa-bars{
+    color: white;
+}
+
+#submit{
+    margin-top: 20px;
+}
+
+/* #header-dropdown{
+    margin-right: 20px;
+} */
+
+#signin-form{
+    max-width:  30rem ;
+    padding: 20px;
+    padding-top: 0px;
+    background-color: rgb(94, 91, 91);
+    border-radius: 20px;
+    color: white;
+    background-color: #05648C;
+}
+
+#profile-card{
+    max-width: 18em;
+    background-color: white;
+}
+
+#profile-card-image {
+    background-color: rgb(102, 105, 105);
+    border-radius: 200px;
+    width: 60%;
+    height: 60%;
+    margin-left: 60px; 
+    margin-top: 30px;
+}
+
+#patient-card-image img {
+    background-color: rgb(102, 105, 105);
+    border-radius: 100px;
+    width: 100px;
+    height: 100px;
+}
+
+.relative {
+    position: relative;
+}
+
+.patient__div--image {
+    display: none;
+    width: 95px;
+    top: 60px;
+    height: 40px;
+    border-radius: 0 0 80px 80px;
+    position: absolute;
+    backdrop-filter: blur(2px);
+}
+
+#profile-pick-text{
+    color:#ffffff;
+}
+
+#user-alert{
+    text-align: center;
+    font-size: xx-large;
+}
+
+#alert{
+    margin-top: 8vh;
+    font-size: xx-large;
+}
+
+#patient-card-image:hover .patient__div--image {
+    padding-top: px;
+    text-align: center;
+    display: block;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.397);
+}
