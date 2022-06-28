@@ -20,6 +20,10 @@ div#root{
     background-color: #002E4E;
 }
 
+div.card-title{
+    font-size: 40px;
+}
+
 .mb-3{
     color: white;
     text-decoration: none;
@@ -27,6 +31,7 @@ div#root{
 
 button.btn.btn-secondary {
     background-color: #003A61;
+    float: right;
 }
 
 #nav-a{

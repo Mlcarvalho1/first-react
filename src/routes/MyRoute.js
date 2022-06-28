@@ -1,33 +1,24 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import  PropTypes  from "prop-types"
-import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
-export default function MyRoute({ component: Component, isClosed, ...rest}){
-    const isLoggedIn = false;
+export default function MyRoute({ isClosed, notForLogged, ...rest}){
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
-    if(isClosed && !isLoggedIn){
-        Swal.fire({
-            title: 'Erro!',
-            text: 'Voce precisa estar logado para acessar esta pagina!',
-            icon: 'error',
-            confirmButtonText: 'Ok'
-          })
-        return(
-            <Redirect
-                to={{ pathname: '/login', state: { prevPath: rest.location.pathname} }}
-            />
-        )
+    if (isClosed && !isLoggedIn){
+        return <Redirect to={'/login'}/>
+
     }
 
-    return <Route {...rest} component={Component} />
-}
+    if (notForLogged && isLoggedIn){
+        return <Redirect to={'/profilePage'}/>
+    }
 
-MyRoute.defaultProps = {
-    isClosed: false,
+    return <Route {...rest} />
 }
 
 MyRoute.propTypes = {
     component: PropTypes.oneOfType([PropTypes.element, PropTypes.func]).isRequired,
     isClosed: PropTypes.bool
-}
+} 

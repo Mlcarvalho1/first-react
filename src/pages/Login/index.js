@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { FormContainer, SigninBtn} from "./styled";
 import { Form, Button } from "react-bootstrap";
-import * as exampleActions from "../../store/modules/auth.js/actions" 
 import isEmail from "validator/lib/isEmail";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { Redirect } from "react-router-dom";
 
+import { FormContainer, SigninBtn} from "./styled";
+import * as actions from "../../store/modules/auth.js/actions" 
 
-export default function Login() {
+export default function Login(props) {
     const dispatch = useDispatch()
+
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
@@ -29,7 +31,10 @@ export default function Login() {
             toast.error('senha inválida')
         }
 
-        dispatch(exampleActions.sendForm())
+        if(formErros) return;
+
+        dispatch(actions.loginRequest({email, password}))
+        
     }
     
     return (

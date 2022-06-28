@@ -18,7 +18,7 @@ export default function Signin(props) {
         e.preventDefault()
 
         let formErros = false;
-        if(name.length < 3 || name.length > 255){
+        if(name.length < 3 || name.length > 100){
             formErros = true
         
             toast.error('Seu nome deve ter entre 3 e 255 caracteres')

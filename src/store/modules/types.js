@@ -1,1 +1,5 @@
-export const BOTAO_CLICADO = 'BOTAO_CLICADO'
+export const LOGUIN_REQUEST = 'LOGUIN_REQUEST'
+export const LOGUIN_SUCCESS = 'LOGUIN_SUCCESS'
+export const LOGUIN_FAILURE = 'LOGUIN_FAILURE'
+
+export const PERSIST_REHYDRATE = 'persist/REHYDRATE'

@@ -4,18 +4,22 @@ import './css/app.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
+import { PersistGate } from "redux-persist/integration/react";
 
-import store from "./store";
+import store, { persistor } from "./store";
 import Header from "./components/Header";
 import Routes from "./routes";
 
 function App() {
   return (
     <Provider store={store}>
-      <Header/>
-      <Routes/>
-      <ToastContainer/>
+      <PersistGate persistor={persistor}>
+        <Header/>
+        <Routes/>
+        <ToastContainer/>
+      </PersistGate>
     </Provider>
+    
   );
 }
 
