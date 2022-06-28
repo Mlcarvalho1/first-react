@@ -7,6 +7,7 @@ import HomePage from '../pages/HomePage';
 import Signin from '../pages/Signin';
 import MyRoute from './MyRoute';
 import ProfilePage from '../pages/ProfilePage';
+import PatientPage from '../pages/patientPage';
 
 export default function Routes() {
     return(
@@ -15,7 +16,8 @@ export default function Routes() {
             <MyRoute path="/login" component={Login} notForLogged/>
             <MyRoute path="/home" component={HomePage}/>
             <MyRoute path="/signin" component={Signin} notForLogged/>
-            <MyRoute path="/profilePage" component={ProfilePage} isClosed/>
+            <MyRoute path="/profile-page" component={ProfilePage} isClosed/>
+            <MyRoute path="/patient-page" component={PatientPage} isClosed/>
             <MyRoute path="*" component={Page404}/>
             </Switch>
         </Router>

@@ -1,4 +1,3 @@
-import { Redirect } from 'react-router-dom';
 
 import axios from '../../../services/axios';
 import * as types from '../types';

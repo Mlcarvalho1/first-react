@@ -3,12 +3,14 @@ import { Form, Button } from "react-bootstrap";
 import isEmail from "validator/lib/isEmail";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+
 
 import { FormContainer, SigninBtn} from "./styled";
 import * as actions from "../../store/modules/auth.js/actions" 
 
 export default function Login(props) {
+    const history = useHistory();
     const dispatch = useDispatch()
 
 
@@ -34,7 +36,8 @@ export default function Login(props) {
         if(formErros) return;
 
         dispatch(actions.loginRequest({email, password}))
-        
+
+        history.push('/profile-page');
     }
     
     return (

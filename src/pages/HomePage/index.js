@@ -1,7 +1,16 @@
 import React from "react";
+import { Container, Text, Title } from "./styled"
   
 export default function HomePage() {
     return (
-        <h1> Pagina inicial </h1>
+        <>       
+         
+         <Container>
+         <Title> Pagina inicial </Title>
+            <Text>
+                masmaskmlaksmlk
+            </Text>
+         </Container>
+        </>
     )
 }

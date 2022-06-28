@@ -12,7 +12,7 @@ export default function MyRoute({ isClosed, notForLogged, ...rest}){
     }
 
     if (notForLogged && isLoggedIn){
-        return <Redirect to={'/profilePage'}/>
+        return <Redirect to={'/profile-page'}/>
     }
 
     return <Route {...rest} />

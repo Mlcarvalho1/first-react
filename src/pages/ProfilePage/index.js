@@ -49,8 +49,8 @@ export default function HomePage() {
                         'Não foi possível deletar este paciente',
                         'error'
                     )   
-            }
-              
+            
+                }
             }
           })
         

@@ -2,11 +2,12 @@ import React from "react";
 import { Navbar,Nav, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import * as actions from "../../store/modules/auth.js/actions"
 
 export default function Header(){
+    const history = useHistory();
     const dispatch = useDispatch();
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const handleLogout = () => {
@@ -25,7 +26,7 @@ export default function Header(){
                 'success'
               )
               dispatch(actions.loginFailure())
-              return <Redirect to="/home"/>
+              history('/')
             }
           }) 
     }
@@ -38,7 +39,7 @@ export default function Header(){
             <Nav className="me-auto">
                 <Nav.Link href="/home">Home</Nav.Link>
                 {!isLoggedIn && <Nav.Link href="/login">Login</Nav.Link>}
-                {isLoggedIn && <Nav.Link href="/profilePage">Meu perfil</Nav.Link>}
+                {isLoggedIn && <Nav.Link href="/profile-page">Meu perfil</Nav.Link>}
                 {isLoggedIn && <Nav.Link onClick={handleLogout}>Sair da conta</Nav.Link>}
             </Nav>
             </Navbar.Collapse>
