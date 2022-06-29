@@ -8,7 +8,6 @@ import { get } from "lodash";
 import axios from "../../services/axios";
 
 export default function Signin(props) {
-    console.log(props);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [PasswordConfirmation, setPasswordConfirmation] = useState('');

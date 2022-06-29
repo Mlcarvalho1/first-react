@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Table, Dropdown, Card, Button } from "react-bootstrap";
 import moment from "moment";
 import Swal from "sweetalert2";
+import { useHistory } from "react-router-dom";
 
 import PatientEditModal from "../../components/PatientEditModal";
 import PatientCreateModal from "../../components/CreatePatientModal";
 import UserEditModal from "../../components/UserEditModal";
 import axios from "../../services/axios";
 export default function HomePage() {
+    const history = useHistory()
     const [patients, setPatients] = useState([]);
     const [user, setUser] = useState({});
     const [patient, setPatient] = useState({});
@@ -15,6 +17,9 @@ export default function HomePage() {
     const [openPatientCreateModal, setOpenPatientCreateModal] = useState(false);
     const [openUserEditModal, setOpenUserEditModal] = useState(false);
 
+    const goToPatientPage = patient => {
+        history.push(`/patient-page/${patient.id}`)
+    }
     const handleUserEdit = () => setOpenUserEditModal(true); 
     const handlePatientEdit = (patient) => {
         setOpenPatientEditModal(true);
@@ -98,22 +103,21 @@ export default function HomePage() {
                 <Table hover>
                     <thead>
                         <tr>
-                        <th>id</th>
-                        <th>Nome</th>
-                        <th>Peso</th>
-                        <th>Altura</th>
-                        <th>Idade</th>
-                        <th></th>
+                            <th>id</th>
+                            <th>Nome</th>
+                            <th>Peso</th>
+                            <th>Altura</th>
+                            <th>Idade</th>
                         </tr>
                     </thead>
                     <tbody>
                         {patients.map((patient, i) => (
                             <tr key={patient.id}>
-                                <td>{patient.id}</td>
-                                <td>{patient.name}</td>
-                                <td>{patient.weight}</td>
-                                <td>{patient.height}</td>
-                                <td>{patient.age}</td>
+                                <td onClick={() => goToPatientPage(patient)}>{patient.id}</td>
+                                <td onClick={() => goToPatientPage(patient)}>{patient.name}</td>
+                                <td onClick={() => goToPatientPage(patient)}>{patient.weight} Kg</td>
+                                <td onClick={() => goToPatientPage(patient)}>{patient.height} cm</td>
+                                <td onClick={() => goToPatientPage(patient)}>{patient.age} anos</td>
                                 <td>
                                     <Dropdown>
                                         <Dropdown.Toggle variant="secondary" id="dropdown-basic">

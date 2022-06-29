@@ -3,8 +3,8 @@ import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import moment from "moment";
 import Swal from "sweetalert2";
+import { Form, InputGroup } from "react-bootstrap";
 
-import { ModalForm } from "./styled";
 import axios from "../../services/axios";
 
 export default function PatientEditModal({setOpenModal, patient, listPatients}) {
@@ -72,24 +72,26 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
             <Modal.Title>Editar Paciente</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ModalForm >
-                    <ModalForm.Group className="mb-3">
-                        <ModalForm.Label>Nome:</ModalForm.Label>
-                        <ModalForm.Control type="text" defaultValue={name} onChange={e => setName(e.target.value)}/>
-                    </ModalForm.Group>
-                    <ModalForm.Group className="mb-3">
-                        <ModalForm.Label>Peso:</ModalForm.Label>
-                        <ModalForm.Control type="number" defaultValue={weight} onChange={e => setWeight(e.target.value)}/>
-                    </ModalForm.Group>
-                    <ModalForm.Group className="mb-3">
-                        <ModalForm.Label>Altura:</ModalForm.Label>
-                        <ModalForm.Control type="number" defaultValue={height} onChange={e => setHeight(e.target.value)}/>
-                    </ModalForm.Group>
-                    <ModalForm.Group className="mb-3">
-                        <ModalForm.Label>Data de nascimento:</ModalForm.Label>
-                        <ModalForm.Control type="date" defaultValue={borned_at} onChange={e => setBornedAt(e.target.value)}/>
-                    </ModalForm.Group>
-                </ModalForm>
+                <Form >
+                        <Form.Label>Nome:</Form.Label>
+                    <InputGroup>
+                        <Form.Control type="text" defaultValue={name} onChange={e => setName(e.target.value)}/>
+                    </InputGroup>
+                        <Form.Label>Peso:</Form.Label>
+                    <InputGroup>
+                        <Form.Control type="number" defaultValue={weight} onChange={e => setWeight(e.target.value)}/>
+                        <InputGroup.Text id="basic-addon2">Kg</InputGroup.Text>
+                    </InputGroup>
+                        <Form.Label>Altura:</Form.Label>
+                    <InputGroup>
+                        <Form.Control type="number" defaultValue={height} onChange={e => setHeight(e.target.value)}/>
+                        <InputGroup.Text id="basic-addon2">cm</InputGroup.Text>
+                    </InputGroup>
+                        <Form.Label>Data de nascimento:</Form.Label>
+                    <InputGroup>
+                        <Form.Control type="date" defaultValue={borned_at} onChange={e => setBornedAt(e.target.value)}/>
+                    </InputGroup>
+                </Form>
             </Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

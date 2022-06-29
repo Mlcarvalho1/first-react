@@ -17,7 +17,7 @@ export default function Routes() {
             <MyRoute path="/home" component={HomePage}/>
             <MyRoute path="/signin" component={Signin} notForLogged/>
             <MyRoute path="/profile-page" component={ProfilePage} isClosed/>
-            <MyRoute path="/patient-page" component={PatientPage} isClosed/>
+            <MyRoute path="/patient-page/:id" component={PatientPage} isClosed/>
             <MyRoute path="*" component={Page404}/>
             </Switch>
         </Router>
