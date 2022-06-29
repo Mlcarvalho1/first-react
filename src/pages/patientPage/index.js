@@ -2,21 +2,26 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { Dropdown } from "react-bootstrap";
+import Highcharts from 'highcharts';
 
-import { Container, Text, Title, PatientCard, MeasurementsCard, MeasurementsTable, Button, InputDate } from "./styled";
+import { Container, ChartCard, Chart, Text, Title, PatientCard, MeasurementsCard, MeasurementsTable, Button, InputDate, SelectDayContainer } from "./styled";
 import PatientEditModal from "../../components/PatientEditModal";
 import MeasurementCreateModal from "../../components/CreateMeasurementModal";
 import MeasurementEditModal from "../../components/MeasurementEditModal";
 import axios from "../../services/axios";
+import { lineChart } from "./chartsConfig";
 
 export default function PatientPage({match}) {
-    const [patient, setPatient] = useState({})
-    const [measurements, setMeasurements] = useState([])
+    const [patient, setPatient] = useState({});
+    const [measurements, setMeasurements] = useState([]);
+    const [measurementsValues, setMeasurementsValues] = useState([]);
     const [measurement, setMeasurement] = useState({});
     const [day, setDay] = useState(moment().format('YYYY-MM-DD'));
     const [openPatientEditModal, setOpenPatientEditModal] = useState(false);
     const [openMeasurementCreateModal, setOpenMeasurementCreateModal] = useState(false);
     const [openMeasurementEditModal, setOpenMeasurementEditModal] = useState(false);
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
     
     const editPatient = () => setOpenPatientEditModal(true)
 
@@ -79,9 +84,20 @@ export default function PatientPage({match}) {
         setMeasurements(formatedMeasurements)
     }
 
+    const getMeasurementsValues = async () => {
+        const values = await axios.get(`patients/measurements/${match.params.id}/chart`,  
+        {params: {
+            startDate: '2022-06-01',
+            endDate: ''
+        }
+        })
+        setMeasurementsValues(values)
+    } 
+
     useEffect(() => {
         showPatient()
         listMeasurements()
+        getMeasurementsValues()
     }, [day]);
 
     return (
@@ -144,6 +160,13 @@ export default function PatientPage({match}) {
                     </MeasurementsTable>
                 </MeasurementsCard>
         </Container>
+        <ChartCard>
+            <SelectDayContainer>
+                <InputDate type="date" value={startDate}></InputDate>
+                <InputDate type="date" value={endDate}></InputDate>
+            </SelectDayContainer>
+            <Chart highcharts={Highcharts} options={lineChart(startDate, endDate, measurementsValues)} />
+        </ChartCard>
         </>
     )
 }

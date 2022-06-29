@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Card, Table, Button as button, InputGroup } from "react-bootstrap";
+import { Card, Table, Button as button } from "react-bootstrap";
+import HighchartsReact from "highcharts-react-official";
 
 export const Container = styled.div`
     display: flex;
@@ -14,6 +15,21 @@ export const PatientCard = styled(Card)`
 export const MeasurementsCard = styled(Card)`
     padding: 10px;
     overflow-x: scroll;
+    margin-top: 10px;
+    margin-bottom: 10px;
+`
+
+export const ChartCard = styled.div`
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95vw;
+    border-radius: 8px;
+    background-color: white;
+    padding: 1em;
+`
+
+export const Chart = styled(HighchartsReact)`
+
 `
 
 export const MeasurementsTable = styled(Table)`
@@ -39,7 +55,11 @@ export const InputDate = styled.input`
     padding: 5px;
     align-self: center;
     max-width: 150px;
+    margin-left: 5px;
 `
-
-
-
+export const SelectDayContainer = styled.div`
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    max-width: 310px;
+`

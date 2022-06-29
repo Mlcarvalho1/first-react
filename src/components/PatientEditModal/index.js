@@ -12,7 +12,6 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
     const [weight, setWeight] = useState(patient.weight);
     const [height, setHeight] = useState(patient.height);
     const [borned_at, setBornedAt] = useState(patient.borned_at);
-    const [firstError, setFirstError] = useState(true)
     
     const handleClose = () => setOpenModal(false)
     const handleSubmit = async () => {
@@ -20,10 +19,6 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
         let formErrors = false
 
         if(height < 20 || height > 250){
-            if(firstError){
-                toast.warning('A altura deve ser expressa em centimetros!', {autoClose: false})
-                setFirstError(false)
-            }
             toast.error('altura inválida')
             formErrors = true
         }
