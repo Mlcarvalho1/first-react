@@ -6,7 +6,7 @@ import { Form, InputGroup } from "react-bootstrap";
 import axios from "../../services/axios";
 import Swal from "sweetalert2";
 
-export default function MeasurementEditModal({setOpenModal, listMeasurements, measurement, patientId}) {
+export default function MeasurementEditModal({setOpenModal, init, measurement, patientId}) {
     const [glucose, setGlucose] = useState(measurement.glucose);
     const [carbs, setCarbs] = useState(measurement.carbs);
     const [insulin, setInsulin] = useState(measurement.insulin);
@@ -42,7 +42,7 @@ export default function MeasurementEditModal({setOpenModal, listMeasurements, me
           })
 
         setOpenModal(false);
-        listMeasurements();
+        init();
     }
 
     return(
