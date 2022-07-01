@@ -5,6 +5,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { Form, InputGroup } from "react-bootstrap";
 
+import Loading from "../loading";
 import axios from "../../services/axios";
 
 export default function PatientEditModal({setOpenModal, patient, listPatients}) {
@@ -12,7 +13,9 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
     const [weight, setWeight] = useState(patient.weight);
     const [height, setHeight] = useState(patient.height);
     const [borned_at, setBornedAt] = useState(patient.borned_at);
-    
+    const [isLoading, setIsLoading] = useState(false);
+    const [formChanged, setFormChanged] = useState(false);
+
     const handleClose = () => setOpenModal(false)
     const handleSubmit = async () => {
         
@@ -38,8 +41,9 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
             formErrors = true;
         }
 
-        if(formErrors) return;
+        if(formErrors || !formChanged) return;
 
+        setIsLoading(true)
         try{
             await axios.put(`/patients/${patient.id}`, {
                 name,
@@ -59,10 +63,13 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
                 title: 'Algo deu errado',
                 text: e.response.data.error
             });
+        } finally {
+            setIsLoading(false)
         }
     }
     return(
         <Modal show >
+            <Loading isLoading={isLoading}/>
             <Modal.Header closeButton  onClick={handleClose}>
             <Modal.Title>Editar Paciente</Modal.Title>
             </Modal.Header>
@@ -70,21 +77,21 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
                 <Form >
                         <Form.Label>Nome:</Form.Label>
                     <InputGroup>
-                        <Form.Control type="text" defaultValue={name} onChange={e => setName(e.target.value)}/>
+                        <Form.Control type="text" defaultValue={name} onChange={e => {setName(e.target.value); setFormChanged(true)}}/>
                     </InputGroup>
                         <Form.Label>Peso:</Form.Label>
                     <InputGroup>
-                        <Form.Control type="number" defaultValue={weight} onChange={e => setWeight(e.target.value)}/>
+                        <Form.Control type="number" defaultValue={weight} onChange={e => {setWeight(e.target.value); setFormChanged(true)}}/>
                         <InputGroup.Text id="basic-addon2">Kg</InputGroup.Text>
                     </InputGroup>
                         <Form.Label>Altura:</Form.Label>
                     <InputGroup>
-                        <Form.Control type="number" defaultValue={height} onChange={e => setHeight(e.target.value)}/>
+                        <Form.Control type="number" defaultValue={height} onChange={e => {setHeight(e.target.value); setFormChanged(true)}}/>
                         <InputGroup.Text id="basic-addon2">cm</InputGroup.Text>
                     </InputGroup>
                         <Form.Label>Data de nascimento:</Form.Label>
                     <InputGroup>
-                        <Form.Control type="date" defaultValue={borned_at} onChange={e => setBornedAt(e.target.value)}/>
+                        <Form.Control type="date" defaultValue={borned_at} onChange={e => {setBornedAt(e.target.value); setFormChanged(true)}}/>
                     </InputGroup>
                 </Form>
             </Modal.Body>

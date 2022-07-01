@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import { Button as button } from "react-bootstrap";
+
 export const Container = styled.div`
     padding: 10px;
     vertical-align: middle;
@@ -12,6 +14,18 @@ export const Container = styled.div`
 
 export const Title = styled.h1`
     color: white;
+`
+
+export const Button = styled(button)`
+`
+
+export const Link = styled.a`
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    &:hover{
+        color: white
+    }
 `
 
 export const Text = styled.p`

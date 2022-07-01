@@ -1,13 +1,18 @@
 import React from "react";
 import propTypes from 'prop-types'
-import { Container } from "react-bootstrap";
+
+import loading from './amigo-loading-v3.gif'
+import { Container, LoadingGiff, LoadingSpan, LoadingText } from "./styled";
 
 export default function Loading( { isLoading }) {
     if(!isLoading) return <></>;
     return(
         <Container>
             <div/>
-            <span>Carregando...</span>
+            <LoadingSpan>
+                <LoadingGiff src={loading} alt=""/>
+                <LoadingText>Carregando...</LoadingText>
+            </LoadingSpan>
         </Container>
     )
 }

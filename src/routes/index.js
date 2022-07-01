@@ -13,8 +13,8 @@ export default function Routes() {
     return(
         <Router>
             <Switch>
-            <MyRoute path="/login" component={Login} notForLogged/>
             <MyRoute path="/home" component={HomePage}/>
+            <MyRoute path="/login" component={Login} notForLogged/>
             <MyRoute path="/signin" component={Signin} notForLogged/>
             <MyRoute path="/profile-page" component={ProfilePage} isClosed/>
             <MyRoute path="/patient-page/:id" component={PatientPage} isClosed/>

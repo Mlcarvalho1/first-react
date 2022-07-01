@@ -4,7 +4,8 @@ import Swal from "sweetalert2";
 import { Dropdown, Pagination } from "react-bootstrap";
 import Highcharts from 'highcharts';
 
-import { MeasurementsPagination, ChartSelector, Container, ChartCard, Chart, Text, Title, PatientCard, MeasurementsCard, MeasurementsTable, Button, InputDate, SelectDayContainer } from "./styled";
+import Loading from "../../components/loading";
+import { Alert, MeasurementsPagination, ChartSelector, Container, ChartCard, Chart, Text, Title, PatientCard, MeasurementsCard, MeasurementsTable, Button, InputDate, SelectDayContainer } from "./styled";
 import PatientEditModal from "../../components/PatientEditModal";
 import MeasurementCreateModal from "../../components/CreateMeasurementModal";
 import MeasurementEditModal from "../../components/MeasurementEditModal";
@@ -27,6 +28,7 @@ export default function PatientPage({match}) {
     const [totalPages, setTotalPages] = useState(1);
     const [isColumnChart, setIsColumnChart] = useState(false);
     const [isLineChart, setIsLineChart] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     
     const editPatient = () => setOpenPatientEditModal(true)
     
@@ -52,6 +54,7 @@ export default function PatientPage({match}) {
             confirmButtonText: 'Sim, quero deletar!'
         }).then(async(result) => {
             if (result.isConfirmed) {
+                setIsLoading(true);
                 try {
                     await axios.delete(`/patients/measurements/${patient.id}/${measurement.id}`);
                     const newMeasurements = [...measurements];
@@ -73,7 +76,7 @@ export default function PatientPage({match}) {
                             'error'
                             )   
                             
-                        }
+                    }
                     }
                 })
             }
@@ -134,13 +137,15 @@ export default function PatientPage({match}) {
 
         const setColumnChart = () => {
             setIsLineChart(false);
-            setIsColumnChart(true)
+            setIsColumnChart(true);
         }
 
-        const init = () =>{
-            showPatient();
-            listMeasurements();
-            getMeasurementsValues();
+        const init = async () =>{
+            setIsLoading(true);
+            await showPatient();
+            await listMeasurements();
+            await getMeasurementsValues();
+            setIsLoading(false);
         }
 
         useEffect(() => {
@@ -148,7 +153,8 @@ export default function PatientPage({match}) {
         }, [ day, startDate, endDate, atualPage, totalPages]);
         
         return (
-            <>
+        <>
+        <Loading isLoading={isLoading}/>
         {openPatientEditModal && <PatientEditModal patient={patient} setOpenModal={setOpenPatientEditModal} listPatients={showPatient}/>}
         {openMeasurementCreateModal && <MeasurementCreateModal patientId={patient.id} setOpenModal={setOpenMeasurementCreateModal} listMeasurements={init}></MeasurementCreateModal>}
         {openMeasurementEditModal && <MeasurementEditModal setOpenModal={setOpenMeasurementEditModal} measurement={measurement} patientId={patient.id} init={init}></MeasurementEditModal>}
@@ -172,7 +178,8 @@ export default function PatientPage({match}) {
                         <Button variant="secondary" onClick={createMeasurement}> Adicionar medição</Button>
                     </div>  
                     <InputDate type="date" value={day} onChange={e => setDay(e.target.value)}></InputDate>
-                    <MeasurementsTable hover>
+                    {measurements.length === 0 && <Alert><Alert.Heading>Nenhuma medição registrada nesta data</Alert.Heading></Alert>}
+                    {measurements.length !== 0 && <MeasurementsTable hover>
                     <thead>
                         <tr>
                             <th>Horário</th>
@@ -204,7 +211,7 @@ export default function PatientPage({match}) {
                                 )
                             )}
                         </tbody>
-                    </MeasurementsTable>
+                    </MeasurementsTable>}
                     <MeasurementsPagination>{pageItens}</MeasurementsPagination>
                 </MeasurementsCard>
         </Container>
@@ -213,12 +220,13 @@ export default function PatientPage({match}) {
                 <InputDate type="date" value={startDate} onChange={e => setStartDate(e.target.value)}></InputDate>
                 <InputDate type="date" value={endDate} onChange={e => setEndDate(e.target.value)}></InputDate>
             </SelectDayContainer>
-            <ChartSelector aria-label="Basic example">
+            {measurementsValues.length !== 0 && <ChartSelector aria-label="Basic example">
                 <Button variant="secondary" onClick={setLineChart}>Medições</Button>
                 <Button variant="secondary" onClick={setColumnChart}>Médias</Button>
-            </ChartSelector>
-            {isColumnChart && <Chart highcharts={Highcharts} options={columnChart(measurementsValues)} />}
-            {isLineChart && <Chart highcharts={Highcharts} options={lineChart(startDate, endDate ,measurementsValues)}/>}
+            </ChartSelector>}
+            {isColumnChart && measurementsValues.length !== 0 && <Chart highcharts={Highcharts} options={columnChart(measurementsValues)} />}
+            {isLineChart && measurementsValues.length !== 0 && <Chart highcharts={Highcharts} options={lineChart(startDate, endDate ,measurementsValues)}/>}
+            {measurementsValues.length === 0 && <Alert><Alert.Heading>Nenhuma medição registrada nesta data</Alert.Heading></Alert>}
         </ChartCard>
         </>
     )

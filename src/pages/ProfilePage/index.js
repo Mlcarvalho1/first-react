@@ -4,12 +4,15 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { useHistory } from "react-router-dom";
 
+import { Alert } from "./styled";
+import Loading from "../../components/loading";
 import PatientEditModal from "../../components/PatientEditModal";
 import PatientCreateModal from "../../components/CreatePatientModal";
 import UserEditModal from "../../components/UserEditModal";
 import axios from "../../services/axios";
 export default function HomePage() {
     const history = useHistory()
+    const [isLoading, setIsloading] = useState(false)
     const [patients, setPatients] = useState([]);
     const [user, setUser] = useState({});
     const [patient, setPatient] = useState({});
@@ -39,6 +42,7 @@ export default function HomePage() {
           }).then(async(result) => {
             if (result.isConfirmed) {
               try {
+                    setIsloading(true);
                     await axios.delete(`/patients/${id}`);
                     const newPatients = [...patients];
                     newPatients.splice(i, 1);
@@ -48,6 +52,7 @@ export default function HomePage() {
                         'Paciente deletado com sucesso',
                         'success'
                     )
+                    
                 } catch (e) {
                     Swal.fire(
                         'Oops...',
@@ -55,6 +60,8 @@ export default function HomePage() {
                         'error'
                     )   
             
+                } finally {
+                    setIsloading(false)
                 }
             }
           })
@@ -76,12 +83,20 @@ export default function HomePage() {
         setUser(userResp.data);
     }
 
+    const init = async () => {
+        setIsloading(true);
+        await listPatients();
+        await showUser();
+        setIsloading(false);
+        console.log(patients.length);
+    }
+
     useEffect(() => {
-        listPatients();
-        showUser();
+        init()
     }, [])
     return (
         <>
+        <Loading isLoading={isLoading}/>
         {openPatientEditModal && <PatientEditModal patient={patient} setOpenModal={setOpenPatientEditModal} listPatients={listPatients}/>}
         {openPatientCreateModal && <PatientCreateModal setOpenModal={setOpenPatientCreateModal} listPatients={listPatients}></PatientCreateModal>}
         {openUserEditModal && <UserEditModal setOpenModal={setOpenUserEditModal} user={user} showUser={showUser}></UserEditModal>}
@@ -100,7 +115,8 @@ export default function HomePage() {
                     Pacientes
                     <Button className="btn btn-secondary" onClick={handlePatientCreate}>Cadastrar paciente</Button>
                 </Card.Title>
-                <Table hover>
+                {patients.length === 0 && <Alert><Alert.Heading>Nenhum Paciente Cadastrado</Alert.Heading></Alert>}
+                {patients.length !== 0 && <Table hover>
                     <thead>
                         <tr>
                             <th>id</th>
@@ -133,7 +149,7 @@ export default function HomePage() {
                             </tr>
                         ))}
                     </tbody>
-                </Table>
+                </Table>}
             </Card.Body>
         </Card>
         </>

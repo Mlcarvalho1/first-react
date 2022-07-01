@@ -6,12 +6,14 @@ import { Form, InputGroup } from "react-bootstrap";
 
 import axios from "../../services/axios";
 import Swal from "sweetalert2";
+import Loading from "../loading";
 
 export default function MeasurementCreateModal({setOpenModal, listMeasurements, patientId}) {
     const [glucose, setGlucose] = useState(0);
     const [carbs, setCarbs] = useState(0);
     const [insulin, setInsulin] = useState(0);
     const [measurement_date, setMeasurementDate] = useState(moment().format('YYYY-MM-DDTHH:mm'));
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleClose = () => setOpenModal(false)
     const handleSubmit = async () => {
@@ -38,23 +40,31 @@ export default function MeasurementCreateModal({setOpenModal, listMeasurements, 
 
         if(formErrors) return 
 
-        await axios.post(`/patients/measurements/${patientId}`, {
-            glucose,
-            insulin,
-            carbs,
-            measurement_date
-        })
-        Swal.fire({
-            icon: 'success',
-            title: 'Medição adicionda com sucesso'
-          })
+        setIsLoading(true)
 
-        setOpenModal(false);
-        listMeasurements();
+        try {
+            await axios.post(`/patients/measurements/${patientId}`, {
+                glucose,
+                insulin,
+                carbs,
+                measurement_date
+            })
+            Swal.fire({
+                icon: 'success',
+                title: 'Medição adicionda com sucesso'
+            })
+            setOpenModal(false);
+            listMeasurements();
+        } catch (error) {
+            
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return(
         <Modal show >
+            <Loading isLoading={isLoading}/>
             <Modal.Header closeButton  onClick={handleClose}>
             <Modal.Title>Cadastrar Paciente</Modal.Title>
             </Modal.Header>

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import { InputGroup, Form } from "react-bootstrap";
 
+import Loading from "../loading";
 import axios from "../../services/axios";
 import Swal from "sweetalert2";
 
@@ -12,11 +13,14 @@ export default function PatientCreateModal({setOpenModal, listPatients}) {
     const [weight, setWeight] = useState(0);
     const [height, setHeight] = useState(0);
     const [borned_at, setBornedAt] = useState('');
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleClose = () => setOpenModal(false)
+
+
     const handleSubmit = async () => {
         let formErrors = false
-
+        
         if(height < 20 || height > 250){
             toast.error('altura inválida')
             formErrors = true
@@ -38,25 +42,39 @@ export default function PatientCreateModal({setOpenModal, listPatients}) {
         }
 
         if(formErrors) return;
+       
+        setIsLoading(true)
 
-        await axios.post('/patients', {
-            name,
-            height,
-            weight,
-            borned_at
-        })
-
-        Swal.fire({
-            icon: 'success',
-            title: 'Paciente cadastrado com sucesso!'
-          })
-
-        setOpenModal(false);
-        listPatients();
+        try {
+            await axios.post('/patients', {
+                name,
+                height,
+                weight,
+                borned_at
+            })
+    
+            Swal.fire({
+                icon: 'success',
+                title: 'Paciente cadastrado com sucesso!'
+            })
+            setOpenModal(false);
+            listPatients();
+            setIsLoading(false);
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Algo deu errado',
+                    text: e.response.data.error
+                });
+            } finally {
+                setIsLoading(false);
+            }
     }
 
     return(
+        <>
         <Modal show >
+            <Loading isLoading={isLoading}/>
             <Modal.Header closeButton  onClick={handleClose}>
             <Modal.Title>Cadastrar Paciente</Modal.Title>
             </Modal.Header>
@@ -91,5 +109,6 @@ export default function PatientCreateModal({setOpenModal, listPatients}) {
             </Button>
             </Modal.Footer>
         </Modal>
+        </>
     )
 }

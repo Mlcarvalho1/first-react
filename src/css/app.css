@@ -32,6 +32,13 @@ div.card-title{
 button.btn.btn-secondary {
     background-color: #003A61;
     float: right;
+    border: #005B98;
+}
+
+button.btn.btn-primary {
+    background-color: #005B98;
+    float: right;
+    border: #005B98;
 }
 
 #nav-a{
