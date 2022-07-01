@@ -3,7 +3,9 @@ import { useSelector } from "react-redux";
 import { Button, Container, Link, Text, Title } from "./styled"
   
 export default function HomePage() {
+    
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+
     return (
         <>       
          
@@ -18,4 +20,4 @@ export default function HomePage() {
          </Container>
         </>
     )
-}
+};

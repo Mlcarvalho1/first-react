@@ -8,4 +8,4 @@ export default function Page404(){
         <Alert.Heading>Opps, Esta pagina nao existe!</Alert.Heading>
         </Alert>
     )
-}
+};

@@ -30,17 +30,17 @@ export default function PatientPage({match}) {
     const [isLineChart, setIsLineChart] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     
-    const editPatient = () => setOpenPatientEditModal(true)
+    const editPatient = () => setOpenPatientEditModal(true);
     
     const showPatient = async () => {
         const patientResp = await axios.get(`/patients/${match.params.id}`);
-        setPatient(patientResp.data)
-    }
+        setPatient(patientResp.data);
+    };
     
     const measurementEdit = (measurement) => {
         setMeasurement(measurement);
         setOpenMeasurementEditModal(true);
-    }
+    };
     
     const deleteMeasurement = (e, measurement, index) => {
         e.persist()
@@ -52,182 +52,183 @@ export default function PatientPage({match}) {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Sim, quero deletar!'
-        }).then(async(result) => {
+        })
+        .then(async(result) => {
             if (result.isConfirmed) {
                 setIsLoading(true);
                 try {
                     await axios.delete(`/patients/measurements/${patient.id}/${measurement.id}`);
                     const newMeasurements = [...measurements];
                     newMeasurements.splice(index, 1);
-                    setMeasurements(newMeasurements)
+                    setMeasurements(newMeasurements);
                     Swal.fire(
                         'Deletado!',
                         'Medição deletada com sucesso',
                         'success'
-                        )
-                    init()
+                        );
+                    init();
                     if(newMeasurements.length === 0 || newMeasurements.length < 6){
-                        setAtualPage(1)
+                        setAtualPage(1);
                     }
-                    } catch (e) {
-                        Swal.fire(
-                            'Oops...',
-                            'Não foi possível deletar esta medição',
-                            'error'
-                            )   
-                            
-                    }
-                    }
-                })
-            }
-            
-            const createMeasurement = () => setOpenMeasurementCreateModal(true)
-            
-            const listMeasurements = async () => {
-                const measurementsResp = await axios.get(`/patients/measurements/${match.params.id}`, {params: {
-                    day,
-                    page: atualPage
-                }});
-
-                const formatedMeasurements = measurementsResp.data.items.map(measurement => { 
-                    measurement.measurement_date = moment(measurement.measurement_date).format('LT')
-                    return measurement
-                });
-
-                setMeasurements(formatedMeasurements);
-
-                if (atualPage === 1) {
-                    const totalMeasurements = measurementsResp.data.total_items;
-
-                    setTotalPages(Math.ceil(totalMeasurements / 6));
+                } catch (e) {
+                    Swal.fire(
+                        'Oops...',
+                        'Não foi possível deletar esta medição',
+                        'error'
+                        );   
+                        
                 }
-
-                pagination(totalPages);
             }
+        });
+    };
             
-            const getMeasurementsValues = async () => {
-                const resp = await axios.get(`patients/measurements/${match.params.id}/chart`, {
-                    params: {
-                        startDay: startDate,
-                        endDay: endDate
-                    }
-                });
-            const values = resp.data.map(measurement => [ +moment(measurement.measurement_date).subtract(3, 'hours').format('x'), measurement.glucose])
+    const createMeasurement = () => setOpenMeasurementCreateModal(true);
+    
+    const listMeasurements = async () => {
+        const measurementsResp = await axios.get(`/patients/measurements/${match.params.id}`, {params: {
+            day,
+            page: atualPage
+        }});
 
-            setMeasurementsValues(values)
-        } 
+        const formatedMeasurements = measurementsResp.data.items.map(measurement => { 
+            measurement.measurement_date = moment(measurement.measurement_date).format('LT')
+            return measurement
+        });
 
-        const pagination = totalPages => {
-            let items = [];
-            for (let number = 1; number <= totalPages; number++) {
-                items.push(
-                  <Pagination.Item key={number} active={number === atualPage} onClick={() => setAtualPage(number)}>
-                    {number}
-                  </Pagination.Item>,
-                );
-              }
+        setMeasurements(formatedMeasurements);
 
-            setPageItens(items)
+        if (atualPage === 1) {
+            const totalMeasurements = measurementsResp.data.total_items;
+
+            setTotalPages(Math.ceil(totalMeasurements / 6));
         }
 
-        const setLineChart = () => {
-            setIsLineChart(true);
-            setIsColumnChart(false);
+        pagination(totalPages);
+    };
+    
+    const getMeasurementsValues = async () => {
+        const resp = await axios.get(`patients/measurements/${match.params.id}/chart`, {
+            params: {
+                startDay: startDate,
+                endDay: endDate
+            }
+        });
+    const values = resp.data.map(measurement => [ +moment(measurement.measurement_date).subtract(3, 'hours').format('x'), measurement.glucose]);
+
+    setMeasurementsValues(values);
+    };
+
+    const pagination = totalPages => {
+        let items = [];
+        for (let number = 1; number <= totalPages; number++) {
+            items.push(
+                <Pagination.Item key={number} active={number === atualPage} onClick={() => setAtualPage(number)}>
+                {number}
+                </Pagination.Item>,
+            );
         }
 
-        const setColumnChart = () => {
-            setIsLineChart(false);
-            setIsColumnChart(true);
-        }
+        setPageItens(items);
+    };
 
-        const init = async () =>{
-            setIsLoading(true);
-            await showPatient();
-            await listMeasurements();
-            await getMeasurementsValues();
-            setIsLoading(false);
-        }
+    const setLineChart = () => {
+        setIsLineChart(true);
+        setIsColumnChart(false);
+    };
 
-        useEffect(() => {
-            init();
-        }, [ day, startDate, endDate, atualPage, totalPages]);
-        
-        return (
-        <>
-        <Loading isLoading={isLoading}/>
-        {openPatientEditModal && <PatientEditModal patient={patient} setOpenModal={setOpenPatientEditModal} listPatients={showPatient}/>}
-        {openMeasurementCreateModal && <MeasurementCreateModal patientId={patient.id} setOpenModal={setOpenMeasurementCreateModal} listMeasurements={init}></MeasurementCreateModal>}
-        {openMeasurementEditModal && <MeasurementEditModal setOpenModal={setOpenMeasurementEditModal} measurement={measurement} patientId={patient.id} init={init}></MeasurementEditModal>}
-        <Container>
-                <PatientCard>  
-                    <div className="mb-2"> 
-                        <Title>{patient.name}</Title>
-                        <Button variant="secondary" onClick={editPatient}>Editar</Button>
-                    </div>
-                    <Text>
-                        Peso: {patient.weight} Kg<br/>
-                        Altura: {patient.height} cm<br/>
-                        Idade: {moment().diff(patient.borned_at,'years')} anos<br/>
-                        Média glicemica: {patient.glycemic_average} mg/dl<br/>
-                        Hemoglobina glicada: {patient.glycated_hemoglobin}%<br/>
-                    </Text>
-                </PatientCard>
-                <MeasurementsCard>
-                    <div className="mb-2"> 
-                        <Title>Medições</Title>
-                        <Button variant="secondary" onClick={createMeasurement}> Adicionar medição</Button>
-                    </div>  
-                    <InputDate type="date" value={day} onChange={e => setDay(e.target.value)}></InputDate>
-                    {measurements.length === 0 && <Alert><Alert.Heading>Nenhuma medição registrada nesta data</Alert.Heading></Alert>}
-                    {measurements.length !== 0 && <MeasurementsTable hover>
-                    <thead>
-                        <tr>
-                            <th>Horário</th>
-                            <th>Glicemia</th>
-                            <th>Carboidratos consumidos</th>
-                            <th>Insulina aplicada</th>
-                        </tr>
-                    </thead>
-                        <tbody>
-                            {measurements.map((measurement, index) => (
-                                <tr key={measurement.id}>
-                                    <td>{measurement.measurement_date}</td>
-                                    <td>{measurement.glucose} mg/dl</td>
-                                    <td>{measurement.carbs} g</td>
-                                    <td>{measurement.insulin} u</td>
-                                    <td>
-                                    <Dropdown>
-                                        <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+    const setColumnChart = () => {
+        setIsLineChart(false);
+        setIsColumnChart(true);
+    };
 
-                                        </Dropdown.Toggle>
+    const init = async () =>{
+        setIsLoading(true);
+        await showPatient();
+        await listMeasurements();
+        await getMeasurementsValues();
+        setIsLoading(false);
+    };
 
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item onClick={() => measurementEdit(measurement)}>Editar</Dropdown.Item>
-                                            <Dropdown.Item onClick={e => deleteMeasurement(e, measurement, index)}>Deletar</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </td>
-                                </tr>
-                                )
-                            )}
-                        </tbody>
-                    </MeasurementsTable>}
-                    <MeasurementsPagination>{pageItens}</MeasurementsPagination>
-                </MeasurementsCard>
-        </Container>
-        <ChartCard>
-            <SelectDayContainer>
-                <InputDate type="date" value={startDate} onChange={e => setStartDate(e.target.value)}></InputDate>
-                <InputDate type="date" value={endDate} onChange={e => setEndDate(e.target.value)}></InputDate>
-            </SelectDayContainer>
-            {measurementsValues.length !== 0 && <ChartSelector aria-label="Basic example">
-                <Button variant="secondary" onClick={setLineChart}>Medições</Button>
-                <Button variant="secondary" onClick={setColumnChart}>Médias</Button>
-            </ChartSelector>}
-            {isColumnChart && measurementsValues.length !== 0 && <Chart highcharts={Highcharts} options={columnChart(measurementsValues)} />}
-            {isLineChart && measurementsValues.length !== 0 && <Chart highcharts={Highcharts} options={lineChart(startDate, endDate ,measurementsValues)}/>}
-            {measurementsValues.length === 0 && <Alert><Alert.Heading>Nenhuma medição registrada nesta data</Alert.Heading></Alert>}
-        </ChartCard>
-        </>
+    useEffect(() => {
+        init();
+    }, [ day, startDate, endDate, atualPage, totalPages]);
+    
+    return (
+    <>
+    <Loading isLoading={isLoading}/>
+    {openPatientEditModal && <PatientEditModal patient={patient} setOpenModal={setOpenPatientEditModal} listPatients={showPatient}/>}
+    {openMeasurementCreateModal && <MeasurementCreateModal patientId={patient.id} setOpenModal={setOpenMeasurementCreateModal} listMeasurements={init}></MeasurementCreateModal>}
+    {openMeasurementEditModal && <MeasurementEditModal setOpenModal={setOpenMeasurementEditModal} measurement={measurement} patientId={patient.id} init={init}></MeasurementEditModal>}
+    <Container>
+            <PatientCard>  
+                <div className="mb-2"> 
+                    <Title>{patient.name}</Title>
+                    <Button variant="secondary" onClick={editPatient}>Editar</Button>
+                </div>
+                <Text>
+                    Peso: {patient.weight} Kg<br/>
+                    Altura: {patient.height} cm<br/>
+                    Idade: {moment().diff(patient.borned_at,'years')} anos<br/>
+                    Média glicemica: {patient.glycemic_average} mg/dl<br/>
+                    Hemoglobina glicada: {patient.glycated_hemoglobin}%<br/>
+                </Text>
+            </PatientCard>
+            <MeasurementsCard>
+                <div className="mb-2"> 
+                    <Title>Medições</Title>
+                    <Button variant="secondary" onClick={createMeasurement}> Adicionar medição</Button>
+                </div>  
+                <InputDate type="date" value={day} onChange={e => setDay(e.target.value)}></InputDate>
+                {measurements.length === 0 && <Alert><Alert.Heading>Nenhuma medição registrada nesta data</Alert.Heading></Alert>}
+                {measurements.length !== 0 && <MeasurementsTable hover>
+                <thead>
+                    <tr>
+                        <th>Horário</th>
+                        <th>Glicemia</th>
+                        <th>Carboidratos consumidos</th>
+                        <th>Insulina aplicada</th>
+                    </tr>
+                </thead>
+                    <tbody>
+                        {measurements.map((measurement, index) => (
+                            <tr key={measurement.id}>
+                                <td>{measurement.measurement_date}</td>
+                                <td>{measurement.glucose} mg/dl</td>
+                                <td>{measurement.carbs} g</td>
+                                <td>{measurement.insulin} u</td>
+                                <td>
+                                <Dropdown>
+                                    <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+
+                                    </Dropdown.Toggle>
+
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={() => measurementEdit(measurement)}>Editar</Dropdown.Item>
+                                        <Dropdown.Item onClick={e => deleteMeasurement(e, measurement, index)}>Deletar</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </td>
+                            </tr>
+                            )
+                        )}
+                    </tbody>
+                </MeasurementsTable>}
+                <MeasurementsPagination>{pageItens}</MeasurementsPagination>
+            </MeasurementsCard>
+    </Container>
+    <ChartCard>
+        <SelectDayContainer>
+            <InputDate type="date" value={startDate} onChange={e => setStartDate(e.target.value)}></InputDate>
+            <InputDate type="date" value={endDate} onChange={e => setEndDate(e.target.value)}></InputDate>
+        </SelectDayContainer>
+        {measurementsValues.length !== 0 && <ChartSelector aria-label="Basic example">
+            <Button variant="secondary" onClick={setLineChart}>Medições</Button>
+            <Button variant="secondary" onClick={setColumnChart}>Médias</Button>
+        </ChartSelector>}
+        {isColumnChart && measurementsValues.length !== 0 && <Chart highcharts={Highcharts} options={columnChart(measurementsValues)} />}
+        {isLineChart && measurementsValues.length !== 0 && <Chart highcharts={Highcharts} options={lineChart(startDate, endDate ,measurementsValues)}/>}
+        {measurementsValues.length === 0 && <Alert><Alert.Heading>Nenhuma medição registrada nesta data</Alert.Heading></Alert>}
+    </ChartCard>
+    </>
     )
-}
+};

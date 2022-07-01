@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import propTypes from "prop-types"
 import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { Form, InputGroup } from "react-bootstrap";
@@ -11,28 +12,30 @@ export default function MeasurementEditModal({setOpenModal, init, measurement, p
     const [glucose, setGlucose] = useState(measurement.glucose);
     const [carbs, setCarbs] = useState(measurement.carbs);
     const [insulin, setInsulin] = useState(measurement.insulin);
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
     const [formChanged, setFormChanged] = useState(false);
 
-    const handleClose = () => setOpenModal(false)
+    const handleClose = () => setOpenModal(false);
+
     const handleSubmit = async () => {
-        let formErrors = false
+        let formErrors = false;
+
         if(glucose === 0 || glucose > 900){
-            toast.error('Medição inválida')
-            formErrors = true
+            toast.error('Medição inválida');
+            formErrors = true;
         }
 
         if(insulin && insulin > 100){
-            toast.error('Insira o valor de insulina em unidades')
-            formErrors = true
+            toast.error('Insira o valor de insulina em unidades');
+            formErrors = true;
         }
 
         if(carbs && carbs > 400){
-            toast.error('Os carboidratos devem ser expressos em gramas')
-            formErrors = true
+            toast.error('Os carboidratos devem ser expressos em gramas');
+            formErrors = true;
         }
 
-        if(formErrors || !formChanged) return 
+        if(formErrors || !formChanged) return ;
 
         setIsLoading(true);
 
@@ -41,11 +44,13 @@ export default function MeasurementEditModal({setOpenModal, init, measurement, p
                 glucose,
                 insulin,
                 carbs,
-            })
+            });
+
             Swal.fire({
                 icon: 'success',
                 title: 'Medição adicionda com sucesso'
-            })  
+            });
+
             setOpenModal(false);
             init();
         } catch (e) {
@@ -57,7 +62,7 @@ export default function MeasurementEditModal({setOpenModal, init, measurement, p
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     return(
         <Modal show >
@@ -94,4 +99,11 @@ export default function MeasurementEditModal({setOpenModal, init, measurement, p
             </Modal.Footer>
         </Modal>
     )
-}
+};
+
+MeasurementEditModal.propTypes = { 
+    setOpenModal: propTypes.func,
+    init: propTypes.func,
+    measurement: propTypes.object,
+    patientId: propTypes.number
+};

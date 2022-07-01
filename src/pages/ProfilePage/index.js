@@ -10,9 +10,10 @@ import PatientEditModal from "../../components/PatientEditModal";
 import PatientCreateModal from "../../components/CreatePatientModal";
 import UserEditModal from "../../components/UserEditModal";
 import axios from "../../services/axios";
+
 export default function HomePage() {
-    const history = useHistory()
-    const [isLoading, setIsloading] = useState(false)
+    const history = useHistory();
+    const [isLoading, setIsloading] = useState(false);
     const [patients, setPatients] = useState([]);
     const [user, setUser] = useState({});
     const [patient, setPatient] = useState({});
@@ -22,13 +23,17 @@ export default function HomePage() {
 
     const goToPatientPage = patient => {
         history.push(`/patient-page/${patient.id}`)
-    }
+    };
+
     const handleUserEdit = () => setOpenUserEditModal(true); 
+    
     const handlePatientEdit = (patient) => {
         setOpenPatientEditModal(true);
         setPatient(patient);
-    }
+    };
+    
     const handlePatientCreate = () => setOpenPatientCreateModal(true);
+    
     const handlePatientDelete =  (e, id, i) => {
         e.persist()
          Swal.fire({
@@ -46,7 +51,7 @@ export default function HomePage() {
                     await axios.delete(`/patients/${id}`);
                     const newPatients = [...patients];
                     newPatients.splice(i, 1);
-                    setPatients(newPatients)
+                    setPatients(newPatients);
                     Swal.fire(
                         'Deletado!',
                         'Paciente deletado com sucesso',
@@ -61,27 +66,27 @@ export default function HomePage() {
                     )   
             
                 } finally {
-                    setIsloading(false)
+                    setIsloading(false);
                 }
             }
-          })
-        
-
-    }
+          });
+    };
 
     const listPatients = async () => {
         const patientResp = await axios.get('/patients');
+
         const formatedPatients = patientResp.data.map(patient => {
             patient.age = moment().diff(patient.borned_at, 'years')
             return patient
-        })
+        });
+
         setPatients(formatedPatients);
-    }
+    };
 
     const showUser = async () => {
         const userResp = await axios.get('/users');
         setUser(userResp.data);
-    }
+    };
 
     const init = async () => {
         setIsloading(true);
@@ -92,8 +97,9 @@ export default function HomePage() {
     }
 
     useEffect(() => {
-        init()
+        init();
     }, [])
+
     return (
         <>
         <Loading isLoading={isLoading}/>
@@ -154,4 +160,4 @@ export default function HomePage() {
         </Card>
         </>
     )
-}
+};

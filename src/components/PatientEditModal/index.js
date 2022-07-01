@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import propTypes from "prop-types"
 import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import moment from "moment";
@@ -16,46 +17,48 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
     const [isLoading, setIsLoading] = useState(false);
     const [formChanged, setFormChanged] = useState(false);
 
-    const handleClose = () => setOpenModal(false)
+    const handleClose = () => setOpenModal(false);
+
     const handleSubmit = async () => {
         
-        let formErrors = false
+        let formErrors = false;
 
         if(height < 20 || height > 250){
-            toast.error('altura inválida')
-            formErrors = true
+            toast.error('altura inválida');
+            formErrors = true;
         }
         
         if(name.length < 3 || name.length > 200){
-            toast.error('Nome inválido')
-            formErrors = true
+            toast.error('Nome inválido');
+            formErrors = true;
         }
 
         if(weight < 5 || weight > 400){
-            toast.error('peso inválido')
-            formErrors = true
+            toast.error('peso inválido');
+            formErrors = true;
         }
 
         if(moment(borned_at).isAfter(moment().format()) || !borned_at){
-            toast.error('Data de nacimento inválida')
+            toast.error('Data de nacimento inválida');
             formErrors = true;
         }
 
         if(formErrors || !formChanged) return;
 
-        setIsLoading(true)
+        setIsLoading(true);
+
         try{
             await axios.put(`/patients/${patient.id}`, {
                 name,
                 weight,
                 height,
                 borned_at,
-            })
+            });
             Swal.fire({
                 icon: 'success',
                 title: 'Dados atualizados com sucesso',
             });
-            listPatients()
+            listPatients();
             setOpenModal(false);
         }catch(e){
             Swal.fire({
@@ -64,9 +67,10 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
                 text: e.response.data.error
             });
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
+
     return(
         <Modal show >
             <Loading isLoading={isLoading}/>
@@ -105,4 +109,10 @@ export default function PatientEditModal({setOpenModal, patient, listPatients}) 
             </Modal.Footer>
         </Modal>
     )
+};
+
+PatientEditModal.propTypes = {
+    setOpenModal: propTypes.func,
+    patient: propTypes.object,
+    listPatients: propTypes.func
 }

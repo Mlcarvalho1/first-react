@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import propTypes from 'prop-types'
 import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import moment from "moment";
@@ -13,34 +14,36 @@ export default function MeasurementCreateModal({setOpenModal, listMeasurements, 
     const [carbs, setCarbs] = useState(0);
     const [insulin, setInsulin] = useState(0);
     const [measurement_date, setMeasurementDate] = useState(moment().format('YYYY-MM-DDTHH:mm'));
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleClose = () => setOpenModal(false)
+    const handleClose = () => setOpenModal(false);
+    
     const handleSubmit = async () => {
-        let formErrors = false
+        let formErrors = false;
+
         if(glucose === 0 || glucose > 900){
-            toast.error('Medição inválida')
-            formErrors = true
+            toast.error('Medição inválida');
+            formErrors = true;
         }
 
         if(insulin && insulin > 100){
-            toast.error('Insira o valor de insulina em unidades')
-            formErrors = true
+            toast.error('Insira o valor de insulina em unidades');
+            formErrors = true;
         }
 
         if(carbs && carbs > 400){
-            toast.error('Os carboidratos devem ser expressos em gramas')
-            formErrors = true
+            toast.error('Os carboidratos devem ser expressos em gramas');
+            formErrors = true;
         }
 
         if(moment(measurement_date).isAfter(moment().format())){
-            toast.error('Data inválida')
-            formErrors = true
+            toast.error('Data inválida');
+            formErrors = true;
         }
 
-        if(formErrors) return 
+        if(formErrors) return;
 
-        setIsLoading(true)
+        setIsLoading(true);
 
         try {
             await axios.post(`/patients/measurements/${patientId}`, {
@@ -48,19 +51,21 @@ export default function MeasurementCreateModal({setOpenModal, listMeasurements, 
                 insulin,
                 carbs,
                 measurement_date
-            })
+            });
+
             Swal.fire({
                 icon: 'success',
                 title: 'Medição adicionda com sucesso'
-            })
+            });
+
             setOpenModal(false);
             listMeasurements();
         } catch (error) {
             
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     return(
         <Modal show >
@@ -101,4 +106,10 @@ export default function MeasurementCreateModal({setOpenModal, listMeasurements, 
             </Modal.Footer>
         </Modal>
     )
+};
+
+MeasurementCreateModal.propTypes = {
+    setOpenModal: propTypes.func,
+    listMeasurements: propTypes.func,
+    patientId: propTypes.number
 }

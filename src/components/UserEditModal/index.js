@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import propTypes from "prop-types"
 import { Modal, Button } from "react-bootstrap";
 import Swal from "sweetalert2";
 import isEmail from "validator/lib/isEmail";
@@ -12,9 +13,10 @@ export default function UserEditModal({setOpenModal, user, showUser}) {
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
     const [isLoading, setIsLoading] = useState(false);
-    const [formChanged, setFormChanged] = useState(false)
+    const [formChanged, setFormChanged] = useState(false);
 
     const handleClose = () => setOpenModal(false);
+
     const handleSubmit = async() => {
         let formErros = false
 
@@ -33,11 +35,13 @@ export default function UserEditModal({setOpenModal, user, showUser}) {
         setIsLoading(true);
         try {
             await axios.put('/users', {name, email});
+
             Swal.fire({
                 icon: 'success',
                 title: 'Dados atualizados com sucesso',
             });
-            await showUser()
+
+            await showUser();
             setIsLoading(false);
             setOpenModal(false);
         } catch (e) {
@@ -53,7 +57,7 @@ export default function UserEditModal({setOpenModal, user, showUser}) {
         
     }
     return(
-        <Modal show >
+        <Modal show>
             <Loading isLoading={isLoading}/>
             <Modal.Header closeButton  onClick={handleClose}>
             <Modal.Title>Editar Usuário</Modal.Title>
@@ -81,4 +85,10 @@ export default function UserEditModal({setOpenModal, user, showUser}) {
             </Modal.Footer>
         </Modal>
     )
+};
+
+UserEditModal.propTypes = {
+    setOpenModal: propTypes.func,
+    user: propTypes.object,
+    showUser: propTypes.func
 }

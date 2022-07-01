@@ -1,4 +1,3 @@
-
 import axios from '../../../services/axios';
 import * as types from '../types';
 
@@ -8,7 +7,6 @@ const initialState = {
     isLoading: false
 };
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default function(state = initialState, action) {
     switch(action.type) {
 

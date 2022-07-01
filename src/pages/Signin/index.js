@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-import { Form, Button, Container} from "react-bootstrap";
+import { Form, Button} from "react-bootstrap";
 import isEmail from "validator/lib/isEmail";
 import { get } from "lodash";
 
 import axios from "../../services/axios";
+import { FormContainer } from "./styled";
 
 export default function Signin(props) {
     const [email, setEmail] = useState('');
@@ -14,36 +15,31 @@ export default function Signin(props) {
     const [name, setName] = useState('');
     
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         let formErros = false;
+
         if(name.length < 3 || name.length > 100){
-            formErros = true
-        
-            toast.error('Seu nome deve ter entre 3 e 255 caracteres')
+            formErros = true;
+            toast.error('Seu nome deve ter entre 3 e 255 caracteres');
         }
 
         if(password.length < 6 || password.length > 80){
-            formErros = true
-
-            toast.error('Sua senha deve ter entre 6 e 80 caracteres')
+            formErros = true;
+            toast.error('Sua senha deve ter entre 6 e 80 caracteres');
         }
 
         if(!isEmail(email)){
-            formErros = true
-
-            toast.error('Email Inválido')
+            formErros = true;
+            toast.error('Email Inválido');
         }
 
         if(password !== PasswordConfirmation){
-            formErros = true
-
-            toast.error('a senha e a confirmação precisam ser iguais')
+            formErros = true;
+            toast.error('a senha e a confirmação precisam ser iguais');
         }
 
-        if(formErros){
-            return
-        }
+        if(formErros) return;
         
         try{
             await axios.post('/users', {
@@ -56,12 +52,13 @@ export default function Signin(props) {
             await Swal.fire({
                 icon: 'success',
                 title: 'Usuário cadastrado',
-              })
+              });
 
-            props.history.push('/login')
+            props.history.push('/login');
               
         }catch(e){
-            const status = get(e, 'response.data.error')
+            const status = get(e, 'response.data.error');
+            
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -73,8 +70,9 @@ export default function Signin(props) {
 
     return (
     <>
-    <h1> Cadastro </h1>
-    <Container>
+    
+    <FormContainer>
+        <h1> Cadastro </h1>
         <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicName">
                 <Form.Label>Nome</Form.Label>
@@ -90,13 +88,13 @@ export default function Signin(props) {
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>Confirmar Senha</Form.Label>
-                <Form.Control type="password" placeholder="Confirmacao" value={PasswordConfirmation} onChange ={e => setPasswordConfirmation(e.target.value)}/>
+                <Form.Control type="password" placeholder="Confirmação" value={PasswordConfirmation} onChange ={e => setPasswordConfirmation(e.target.value)}/>
             </Form.Group>
             <Button variant="primary" type="submit">
                 Submit
             </Button>
         </Form>
-    </Container>
+    </FormContainer>
     </>
     )
-}
+};

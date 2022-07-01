@@ -15,7 +15,7 @@ export default function Loading( { isLoading }) {
             </LoadingSpan>
         </Container>
     )
-}
+};
 
 Loading.defaultProps = {
     isLoading: false,
@@ -23,4 +23,4 @@ Loading.defaultProps = {
 
 Loading.propTypes = {
     isLoading: propTypes.bool
-}
+};
